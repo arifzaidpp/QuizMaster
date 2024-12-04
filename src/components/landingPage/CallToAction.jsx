@@ -1,7 +1,9 @@
 import { motion } from 'framer-motion';
 import { ArrowRight, Sparkles } from 'lucide-react';
+import { useNavigate } from 'react-router';
 
 export function CallToAction() {
+  const navigate = useNavigate();
   return (
     <div className="container mx-auto px-4">
       <div className="max-w-5xl mx-auto">
@@ -46,13 +48,14 @@ export function CallToAction() {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   className="group bg-white px-8 py-4 rounded-full text-lg font-semibold text-blue-600 hover:bg-blue-50 transition-colors inline-flex items-center gap-2"
+                  onClick={() => navigate('/signup')}
                 >
                   Get Started Free
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </motion.button>
-                <button className="text-white hover:text-white/90 transition-colors font-medium">
+                <a href='#contact' className="text-white hover:text-white/90 transition-colors font-medium">
                   Contact Sales →
-                </button>
+                </a>
               </div>
             </div>
           </div>
