@@ -9,8 +9,35 @@ import { Testimonials } from './Testimonials';
 import { CallToAction } from './CallToAction';
 import { Contact } from './Contact';
 import { Footer } from './Footer';
+import { useEffect } from 'react';
 
 export function LandingPage() {
+    useEffect(() => {
+        const handleScroll = (e) => {
+          e.preventDefault();
+          const target = e.target;
+          if (!(target instanceof HTMLAnchorElement)) return;
+          const id = target.getAttribute('href')?.replace('#', '');
+          if (id) {
+            const element = document.getElementById(id);
+            if (element) {
+              element.scrollIntoView({ behavior: 'smooth' });
+              history.pushState(null);
+            }
+          }
+        };
+    
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+          anchor.addEventListener('click', handleScroll);
+        });
+    
+        return () => {
+          document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.removeEventListener('click', handleScroll);
+          });
+        };
+      }, []);
+
     return (
         <div className="min-h-screen bg-white dark:bg-gray-900 transition-colors">
             <Navbar />

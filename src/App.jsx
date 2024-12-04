@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { ThemeToggle } from './components/landingPage/ThemeToggle';
@@ -9,31 +9,6 @@ import { ForgotPasswordForm } from './components/auth/ForgotPasswordForm';
 
 
 function App() {
-  useEffect(() => {
-    const handleScroll = (e) => {
-      e.preventDefault();
-      const target = e.target;
-      if (!(target instanceof HTMLAnchorElement)) return;
-      const id = target.getAttribute('href')?.replace('#', '');
-      if (id) {
-        const element = document.getElementById(id);
-        if (element) {
-          element.scrollIntoView({ behavior: 'smooth' });
-        }
-      }
-    };
-
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', handleScroll);
-    });
-
-    return () => {
-      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.removeEventListener('click', handleScroll);
-      });
-    };
-  }, []);
-
   return (
     <Router>
       <div className="min-h-screen bg-white dark:bg-gray-900 transition-colors">
