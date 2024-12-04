@@ -49,6 +49,13 @@ export function Navbar() {
                 <Moon className="w-5 h-5 text-gray-700" />
               )}
             </button>
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              className="px-4 py-2 group bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-500 dark:to-purple-500 text-white rounded-md"
+            >
+              Login
+            </motion.button>
           </div>
 
           {/* Mobile Navigation Button */}
@@ -91,6 +98,13 @@ export function Navbar() {
                   {item.name}
                 </a>
               ))}
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                className="block w-full px-3 py-2 group bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-500 dark:to-purple-500 text-white text-center rounded-md"
+              >
+                Login
+              </motion.button>
             </div>
           </motion.div>
         )}
