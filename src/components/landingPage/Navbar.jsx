@@ -2,10 +2,12 @@ import { motion } from 'framer-motion';
 import { Menu, X, Moon, Sun } from 'lucide-react';
 import { useState } from 'react';
 import { useTheme } from '../../hooks/useTheme';
+import { useNavigate } from 'react-router';
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const { theme, toggleTheme } = useTheme();
+  const navigate = useNavigate();
 
   const navItems = [
     { name: 'Home', href: '#home' },
@@ -14,6 +16,10 @@ export function Navbar() {
     { name: 'Testimonials', href: '#testimonials' },
     { name: 'Contact', href: '#contact' },
   ];
+
+  const handleLogin = () => {
+    navigate('/login');
+  };
 
   return (
     <nav className="fixed w-full z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md">
@@ -53,6 +59,7 @@ export function Navbar() {
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               className="px-4 py-2 group bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-500 dark:to-purple-500 text-white rounded-md"
+              onClick={handleLogin}
             >
               Login
             </motion.button>
@@ -102,6 +109,7 @@ export function Navbar() {
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
                 className="block w-full px-3 py-2 group bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-500 dark:to-purple-500 text-white text-center rounded-md"
+                onClick={handleLogin}
               >
                 Login
               </motion.button>

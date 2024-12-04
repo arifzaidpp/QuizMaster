@@ -1,7 +1,13 @@
 import { motion } from 'framer-motion';
 import { Brain, ArrowRight, Play } from 'lucide-react';
+import { useNavigate } from 'react-router';
 
 export function Hero() {
+  const navigate = useNavigate();
+  const navigateToSignup = () => {
+    navigate('/signup');
+  };
+
   return (
     <section className="relative min-h-screen py-16 flex items-center justify-center px-4 overflow-hidden" id='home'>
       {/* Animated Background */}
@@ -64,6 +70,7 @@ export function Hero() {
                 whileHover={{ scale: 1.05, boxShadow: '0 0 20px rgba(59, 130, 246, 0.5)' }}
                 whileTap={{ scale: 0.95 }}
                 className="group bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-500 dark:to-purple-500 text-white px-8 py-4 rounded-full text-lg font-semibold transition-all duration-300 hover:shadow-glow flex items-center justify-center gap-2"
+                onClick={navigateToSignup}
               >
                 Get Started
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
