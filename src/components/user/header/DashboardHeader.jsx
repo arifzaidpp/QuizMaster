@@ -40,7 +40,7 @@ export function DashboardHeader({ onMenuClick }) {
             </div>
           </div>
           
-          <SearchBar />
+          {/* <SearchBar /> */}
           
           <div className="flex items-center gap-4">
             <ThemeToggle />

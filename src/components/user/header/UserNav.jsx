@@ -1,9 +1,14 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { User, Settings, LogOut } from 'lucide-react';
+import { useNavigate } from 'react-router';
 
 export function UserNav() {
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
+  const handleProfileClick = () => {
+    navigate('/dashboard/profile');
+  }
 
   return (
     <div className="relative">
@@ -29,7 +34,7 @@ export function UserNav() {
             exit={{ opacity: 0, y: 10 }}
             className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg py-1"
           >
-            <button className="w-full px-4 py-2 text-left flex items-center gap-2 hover:bg-gray-100 dark:hover:bg-gray-700">
+            <button className="w-full px-4 py-2 text-left flex items-center gap-2 hover:bg-gray-100 dark:hover:bg-gray-700" onClick={handleProfileClick}>
               <User className="w-4 h-4" />
               Profile
             </button>
