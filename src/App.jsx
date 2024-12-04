@@ -6,22 +6,34 @@ import { LandingPage } from './components/landingPage/LandingPage';
 import { LoginForm } from './components/auth/LoginForm';
 import { SignupForm } from './components/auth/SignupForm';
 import { ForgotPasswordForm } from './components/auth/ForgotPasswordForm';
+import { DashboardLayout } from './components/user/layout/DashboardLayout';
+import { Dashboard } from './components/user/pages/Dashboard';
+import { AvailableQuizzes } from './components/user/pages/AvailableQuizzes';
+import { YourQuizzes } from './components/user/pages/YourQuizzes';
+import { QuizHistory } from './components/user/pages/QuizHistory';
+import { CreateQuiz } from './components/user/pages/CreateQuiz';
+import { UserProfile } from "./components/user/profile/UserProfile";
 
 
 function App() {
   return (
     <Router>
       <div className="min-h-screen bg-white dark:bg-gray-900 transition-colors">
-        <ThemeToggle />
         <Toaster position="top-right" />
         <Routes>
-          <Route
-            path="/"
-            element={<LandingPage />}
-          />
-          <Route path="/login" element={<LoginForm />} />
-          <Route path="/signup" element={<SignupForm />} />
-          <Route path="/forgot-password" element={<ForgotPasswordForm />} />
+          <Route path="/" element={<LandingPage />} />
+
+          <Route path="/login" element={<div><ThemeToggle /><LoginForm /></div>} />
+          <Route path="/signup" element={<div><ThemeToggle /><SignupForm /></div>} />
+          <Route path="/forgot-password" element={<div><ThemeToggle /><ForgotPasswordForm /></div>} />
+          <Route path="/dashboard" element={<DashboardLayout />}>
+            <Route index element={<Dashboard />} />
+            <Route path="available" element={<AvailableQuizzes />} />
+            <Route path="your-quizzes" element={<YourQuizzes />} />
+            <Route path="history" element={<QuizHistory />} />
+            <Route path="add-quiz" element={<CreateQuiz />} />
+            <Route path="profile" element={<UserProfile />} />
+          </Route>
         </Routes>
       </div>
     </Router>
