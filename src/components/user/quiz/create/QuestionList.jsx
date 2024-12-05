@@ -21,6 +21,7 @@ import { restrictToVerticalAxis } from '@dnd-kit/modifiers';
 
 export function QuestionList({ quizData, setQuizData }) {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const [editingQuestionIndex, setEditingQuestionIndex] = React.useState(null);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -33,15 +34,33 @@ export function QuestionList({ quizData, setQuizData }) {
     })
   );
 
-  const addQuestion = (question) => {
-    const newQuestion = {
-      ...question,
-      id: `question-${Date.now()}`
-    };
-    setQuizData({
-      ...quizData,
-      questions: [...quizData.questions, newQuestion]
-    });
+  const handleEditQuestion = (index) => {
+    setEditingQuestionIndex(index);
+    setIsModalOpen(true);
+  };
+
+  const handleQuestionSave = (question) => {
+    if (editingQuestionIndex !== null) {
+      const updatedQuestions = [...quizData.questions];
+      updatedQuestions[editingQuestionIndex] = {
+        ...question,
+        id: quizData.questions[editingQuestionIndex].id
+      };
+      setQuizData({
+        ...quizData,
+        questions: updatedQuestions
+      });
+      setEditingQuestionIndex(null);
+    } else {
+      const newQuestion = {
+        ...question,
+        id: `question-${Date.now()}`
+      };
+      setQuizData({
+        ...quizData,
+        questions: [...quizData.questions, newQuestion]
+      });
+    }
   };
 
   const removeQuestion = (index) => {
@@ -74,7 +93,10 @@ export function QuestionList({ quizData, setQuizData }) {
         <motion.button
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
-          onClick={() => setIsModalOpen(true)}
+          onClick={() => {
+            setEditingQuestionIndex(null);
+            setIsModalOpen(true);
+          }}
           className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
         >
           <Plus className="w-5 h-5" />
@@ -100,6 +122,7 @@ export function QuestionList({ quizData, setQuizData }) {
                 question={question}
                 index={index}
                 onDelete={removeQuestion}
+                onEdit={handleEditQuestion}
               />
             ))}
           </div>
@@ -116,8 +139,12 @@ export function QuestionList({ quizData, setQuizData }) {
 
       <AddQuestionModal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onAdd={addQuestion}
+        onClose={() => {
+          setIsModalOpen(false);
+          setEditingQuestionIndex(null);
+        }}
+        onAdd={handleQuestionSave}
+        editingQuestion={editingQuestionIndex !== null ? quizData.questions[editingQuestionIndex] : null}
       />
     </div>
   );

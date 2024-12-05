@@ -13,7 +13,8 @@ import { YourQuizzes } from './components/user/pages/YourQuizzes';
 import { QuizHistory } from './components/user/pages/QuizHistory';
 import { CreateQuiz } from './components/user/pages/CreateQuiz';
 import { UserProfile } from "./components/user/profile/UserProfile";
-
+import { QuizPage } from './components/user/quiz/take/QuizPage';
+import { SubscriptionPage } from './components/user/subscription/SubscriptionPage';
 
 function App() {
   return (
@@ -22,10 +23,10 @@ function App() {
         <Toaster position="top-right" />
         <Routes>
           <Route path="/" element={<LandingPage />} />
-
           <Route path="/login" element={<div><ThemeToggle /><LoginForm /></div>} />
           <Route path="/signup" element={<div><ThemeToggle /><SignupForm /></div>} />
           <Route path="/forgot-password" element={<div><ThemeToggle /><ForgotPasswordForm /></div>} />
+          <Route path="/quiz/:quizId" element={<QuizPage />} />
           <Route path="/dashboard" element={<DashboardLayout />}>
             <Route index element={<Dashboard />} />
             <Route path="available" element={<AvailableQuizzes />} />
@@ -33,6 +34,9 @@ function App() {
             <Route path="history" element={<QuizHistory />} />
             <Route path="add-quiz" element={<CreateQuiz />} />
             <Route path="profile" element={<UserProfile />} />
+            <Route path="subscription" element={<SubscriptionPage page="subscription" />} />
+            <Route path='pricing' element={<SubscriptionPage page="pricing" />} />
+            <Route path="*" element={<h1>Not Found</h1>} />
           </Route>
         </Routes>
       </div>

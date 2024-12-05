@@ -1,5 +1,5 @@
 import React from 'react';
-import { QuizList } from '../quizzes/QuizList';
+import { AvailableQuizList } from '../quizzes/available/AvailableQuizList';
 
 export function AvailableQuizzes() {
   return (
@@ -7,7 +7,7 @@ export function AvailableQuizzes() {
       <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
         Available Quizzes
       </h1>
-      <QuizList />
+      <AvailableQuizList />
     </div>
   );
 }

@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Bell } from 'lucide-react';
+import { useDropdown } from '../../../hooks/useDropdown';
 
 const notifications = [
   {
@@ -20,11 +21,11 @@ const notifications = [
 ];
 
 export function NotificationBell() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useDropdown('notifications');
   const unreadCount = notifications.filter(n => n.unread).length;
 
   return (
-    <div className="relative">
+    <div className="relative" data-dropdown="notifications">
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="relative p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"

@@ -23,7 +23,7 @@ export function DashboardHeader({ onMenuClick }) {
   } , []);
   return (
     <header className="sticky top-0 z-50 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
-      <div className="mx-auto px-8">
+      <div className="mx-auto px-2 md:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center gap-4">
             <button
@@ -40,7 +40,7 @@ export function DashboardHeader({ onMenuClick }) {
             </div>
           </div>
           
-          {/* <SearchBar /> */}
+          <SearchBar />
           
           <div className="flex items-center gap-4">
             <ThemeToggle />

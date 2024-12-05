@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { LayoutDashboard, BookOpen, PenTool, History, X } from 'lucide-react';
+import { LayoutDashboard, BookOpen, PenTool, History, X, WalletCards } from 'lucide-react';
 
 const navItems = [
   {
@@ -24,6 +24,11 @@ const navItems = [
     icon: History,
     path: '/dashboard/history',
   },
+  {
+    label: 'Subscriptions',
+    icon: WalletCards,
+    path: '/dashboard/subscription',
+  }
 ];
 
 export function Sidebar({ isOpen, onClose }) {

@@ -1,22 +1,33 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Plus, Minus } from 'lucide-react';
+import { X, Plus, Minus, Square } from 'lucide-react';
+import { MultipleChoiceForm } from './question-forms/MultipleChoiceForm';
+import { ShortAnswerForm } from './question-forms/ShortAnswerForm';
+import { LongAnswerForm } from './question-forms/LongAnswerForm';
+import { FillBlanksForm } from './question-forms/FillBlanksForm';
+import { MatchingForm } from './question-forms/MatchingForm';
 
-export function AddQuestionModal({ isOpen, onClose, onAdd }) {
+export function AddQuestionModal({ isOpen, onClose, onAdd, editingQuestion }) {
   const [questionType, setQuestionType] = useState('multiple-choice');
   const [questionText, setQuestionText] = useState('');
-  const [options, setOptions] = useState(['', '']);
-  const [correctOption, setCorrectOption] = useState(0);
-  const [answer, setAnswer] = useState('');
+  const [questionData, setQuestionData] = useState({});
+  const textareaRef = useRef(null);
+
+  useEffect(() => {
+    if (editingQuestion) {
+      setQuestionType(editingQuestion.type);
+      setQuestionText(editingQuestion.text);
+      const { type, text, id, ...rest } = editingQuestion;
+      setQuestionData(rest);
+    }
+  }, [editingQuestion]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     const question = {
       type: questionType,
       text: questionText,
-      ...(questionType === 'multiple-choice'
-        ? { options, correctOption }
-        : { answer }),
+      ...questionData
     };
     onAdd(question);
     onClose();
@@ -26,19 +37,70 @@ export function AddQuestionModal({ isOpen, onClose, onAdd }) {
   const resetForm = () => {
     setQuestionType('multiple-choice');
     setQuestionText('');
-    setOptions(['', '']);
-    setCorrectOption(0);
-    setAnswer('');
+    setQuestionData({});
   };
 
-  const addOption = () => {
-    setOptions([...options, '']);
+  const insertBlank = () => {
+    const textarea = textareaRef.current;
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const text = questionText;
+    const newText = text.substring(0, start) + '[blank]' + text.substring(end);
+    setQuestionText(newText);
+    
+    const currentBlanks = questionData.blanks || [''];
+    if ((newText.match(/\[blank\]/g) || []).length > currentBlanks.length) {
+      setQuestionData({
+        ...questionData,
+        blanks: [...currentBlanks, ''],
+      });
+    }
+
+    setTimeout(() => {
+      textarea.focus();
+      textarea.setSelectionRange(start + 7, start + 7);
+    }, 0);
   };
 
-  const removeOption = (index) => {
-    setOptions(options.filter((_, i) => i !== index));
-    if (correctOption >= index) {
-      setCorrectOption(Math.max(0, correctOption - 1));
+  const renderQuestionForm = () => {
+    switch (questionType) {
+      case 'multiple-choice':
+        return (
+          <MultipleChoiceForm
+            data={questionData}
+            onChange={setQuestionData}
+          />
+        );
+      case 'short-answer':
+        return (
+          <ShortAnswerForm
+            data={questionData}
+            onChange={setQuestionData}
+          />
+        );
+      case 'long-answer':
+        return (
+          <LongAnswerForm
+            data={questionData}
+            onChange={setQuestionData}
+          />
+        );
+      case 'fill-blanks':
+        return (
+          <FillBlanksForm
+            data={questionData}
+            onChange={setQuestionData}
+          />
+        );
+      case 'matching':
+        return (
+          <MatchingForm
+            data={questionData}
+            onChange={setQuestionData}
+          />
+        );
+      default:
+        return null;
     }
   };
 
@@ -50,12 +112,12 @@ export function AddQuestionModal({ isOpen, onClose, onAdd }) {
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.9 }}
-        className="bg-white dark:bg-gray-800 rounded-xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+        className="bg-white dark:bg-gray-800 rounded-xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto m-4"
       >
         <div className="p-6">
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
-              Add Question
+              {editingQuestion ? 'Edit Question' : 'Add Question'}
             </h3>
             <button
               onClick={onClose}
@@ -80,14 +142,30 @@ export function AddQuestionModal({ isOpen, onClose, onAdd }) {
                 <option value="multiple-choice">Multiple Choice</option>
                 <option value="short-answer">Short Answer</option>
                 <option value="long-answer">Long Answer</option>
+                <option value="fill-blanks">Fill in the Blanks</option>
+                <option value="matching">Match the Following</option>
               </select>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Question Text
-              </label>
+              <div className="flex items-center justify-between mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Question Text
+                </label>
+                {questionType === 'fill-blanks' && (
+                  <button
+                    type="button"
+                    onClick={insertBlank}
+                    className="flex items-center gap-2 px-3 py-1 text-sm bg-blue-100 dark:bg-blue-900/30 
+                             text-blue-600 dark:text-blue-400 rounded-lg hover:bg-blue-200 dark:hover:bg-blue-900/50"
+                  >
+                    <Square className="w-4 h-4" />
+                    Insert Blank
+                  </button>
+                )}
+              </div>
               <textarea
+                ref={textareaRef}
                 value={questionText}
                 onChange={(e) => setQuestionText(e.target.value)}
                 required
@@ -98,71 +176,7 @@ export function AddQuestionModal({ isOpen, onClose, onAdd }) {
               />
             </div>
 
-            {questionType === 'multiple-choice' ? (
-              <div className="space-y-4">
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Options
-                </label>
-                {options.map((option, index) => (
-                  <div key={index} className="flex items-center gap-4">
-                    <input
-                      type="radio"
-                      checked={correctOption === index}
-                      onChange={() => setCorrectOption(index)}
-                      className="text-blue-600"
-                    />
-                    <input
-                      type="text"
-                      value={option}
-                      onChange={(e) => {
-                        const newOptions = [...options];
-                        newOptions[index] = e.target.value;
-                        setOptions(newOptions);
-                      }}
-                      placeholder={`Option ${index + 1}`}
-                      required
-                      className="flex-1 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 
-                               focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400
-                               bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                    />
-                    {options.length > 2 && (
-                      <button
-                        type="button"
-                        onClick={() => removeOption(index)}
-                        className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-full"
-                      >
-                        <Minus className="w-5 h-5" />
-                      </button>
-                    )}
-                  </div>
-                ))}
-                {options.length < 6 && (
-                  <button
-                    type="button"
-                    onClick={addOption}
-                    className="flex items-center gap-2 text-blue-600 dark:text-blue-400"
-                  >
-                    <Plus className="w-4 h-4" />
-                    Add Option
-                  </button>
-                )}
-              </div>
-            ) : (
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Correct Answer
-                </label>
-                <textarea
-                  value={answer}
-                  onChange={(e) => setAnswer(e.target.value)}
-                  required
-                  rows={questionType === 'long-answer' ? 4 : 2}
-                  className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 
-                           focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400
-                           bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                />
-              </div>
-            )}
+            {renderQuestionForm()}
 
             <div className="flex justify-end gap-4">
               <button
@@ -176,7 +190,7 @@ export function AddQuestionModal({ isOpen, onClose, onAdd }) {
                 type="submit"
                 className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
               >
-                Add Question
+                {editingQuestion ? 'Save Changes' : 'Add Question'}
               </button>
             </div>
           </form>
